@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check My Gas - Dashboard</title>
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+    @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+        :root {
+          --c-text-primary: #282a32;
+          --c-text-secondary: #686b87;
+          --c-text-action: #404089;
+          --c-accent-primary: #434ce8;
+          --c-border-primary: #eff1f6;
+          --c-background-primary: #ffffff;
+          --c-background-secondary: #fdfcff;
+          --c-background-tertiary: #ecf3fe;
+          --c-background-quaternary: #e9ecf4;
+        }
+        html {
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            justify-content: center;
+            align-items: center;
+            background: var(--c-background-secondary);
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            line-height: 1.5;
+            min-height: 100vh;
+            font-family: "Be Vietnam Pro", sans-serif;
+            background-color: var(--c-background-secondary);
+            color: var(--c-text-primary);
+        }
+
+        .app-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            height: 100%;
+        }
+
+        .app-name {
+            background: linear-gradient(to right, #9521bf, #728be2) !important;
+            background-clip: text !important;
+            color: transparent !important;
+            font-weight: 800;
+            font-size: 2.5em;
+            text-decoration: none !important;
+        }
+
+        .text-blue {
+            color: #007bff;
+        }
+
+        @media  only screen and (max-width: 641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+            /* for 10 inches tablet screens */
+            body::before {
+                content: "Dream it, live it.";
+                font-weight: bold;
+                display: block;
+                text-align: center;
+                background: rgba(255, 0, 0, 0.9); /* Semi-transparent yellow */
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 99;
+            }
+            .gauge-container {
+                width: 100% !important;
+                margin: 0px !important;
+            }
+        }
+
+
+        @media only screen and (min-width: 641px) {
+            /* for 10 inches tablet screens */
+            body::before {
+                content: "© Burdva Limited";
+                font-weight: bold;
+                display: block;
+                text-align: center;
+                color: var(--c-text-primary);
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 99;
+            }
+            .gauge-container {
+                width: 45% !important;
+            }
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: black;
+        }
+
+        .gauge-container {
+            width: 45%;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .btn-group-vertical {
+            display: block;
+            margin-top: 20px;
+        }
+
+        .canvas-id {
+            /* display: block; */
+            display: none;
+            margin: auto;
+        }
+
+        .card-alt {
+            padding: 1rem;
+            /* background-color: #4b4b4b; */
+            /* box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); */
+            max-width: 320px;
+            /* border-radius: 20px; */
+            color: black;
+            margin-bottom: 16px;
+        }
+
+        .card-active {
+            background-color: #57abfa;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+        }
+
+        .title span {
+            width: 1.5rem;
+        }
+
+        .title span svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* color: #ffffff; */
+            height: 1rem;
+        }
+
+        .title-text {
+            margin-left: 0.5rem;
+            height: 100%;
+            font-size: 16px;
+        }
+
+        .percent {
+            margin-left: 0.5rem;
+            /* color: #02972f; */
+            font-weight: 600;
+            display: flex;
+        }
+
+        .data {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .data p {
+            margin-top: 0.1rem;
+            margin-bottom: 1rem;
+            /* color: #1F2937; */
+            font-size: 12px;
+            /* line-height: 2.5rem; */
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .data .range {
+            position: relative;
+            background-color: #E5E7EB;
+            width: 100%;
+            height: 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .data .range .fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #10B981;
+            width: 76%;
+            height: 100%;
+            border-radius: 0.25rem;
+        }
+
+        span.bx {
+          font-size: 1.5rem;
+        }
+
+        /* ========== GAS CYLINDER CONTAINER ========== */
+        .gas-cylinder {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* horizontally center the top/body/base */
+        width: 60px;
+        height: 90px;
+        margin-left: 20px;
+        margin-right: 20px;
+        }
+
+        /* ========== TOP (the elliptical "cap") ========== */
+        .tank-top {
+        width: 24px;
+        height: 25px;
+        border-radius: 5px 5px 0 0; /* elliptical top */
+
+        /* Metallic radial gradient for a 3D effect */
+        background: radial-gradient(circle at 50% 30%,
+                    #bbb 0%,
+                    #999 40%,
+                    #777 80%,
+                    #666 100%);
+        box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+        }
+
+        /* ========== BODY (middle container) ========== */
+        .tank-body {
+        width: 50px;
+        height: 200px;
+        border-radius: 15px; /* fully rounded sides */
+
+        /* Another radial gradient for the cylinder body */
+        background: radial-gradient(circle at 50% 30%,
+                    #bbb 0%,
+                    #999 40%,
+                    #777 80%,
+                    #666 100%);
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+
+        /* We allow the fill to be absolutely positioned inside */
+        position: relative;
+        overflow: hidden; /* to clip the fill’s top edges */
+        }
+
+        /* The fill gradient inside the body */
+        .lpg-level {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        /* default fill ~ 50%, overridden in JS */
+        height: 5%;
+        /* Liquid/gas gradient */
+        background: linear-gradient(to top,
+                    #1af 0%,
+                    #2df 50%,
+                    #5ff 100%);
+        transition: height 0.3s;
+        /* Keep bottom corners round to match cylinder shape */
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        }
+
+        /* A wave shape at the top of .lpg-level */
+        .lpg-level::after {
+            content: "";
+            position: absolute;
+            top: -19px;
+            left: 0;
+            right: 0;
+            height: 30px;
+            width: 100%;
+            background: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%%232DF' /></svg>") no-repeat center;
+            background-size: 100% 100%;
+            animation: animate 3s ease-in-out infinite;
+            border-radius: 10px;
+        }
+
+        /* ========== BASE (the bottom ring/stand) ========== */
+        .tank-base {
+        width: 28px;
+        height: 10px;
+        border-radius: 0 0 3px 3px; /* elliptical bottom */
+
+        background: radial-gradient(circle at 50% 70%,
+                    #bbb 0%,
+                    #999 40%,
+                    #777 80%,
+                    #666 100%);
+        box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+        }
+
+        @keyframes animate {
+            0%,
+            100% {
+                clip-path: polygon(
+                    0% 45%,
+                    16% 44%,
+                    33% 50%,
+                    54% 60%,
+                    70% 61%,
+                    84% 59%,
+                    100% 52%,
+                    100% 100%,
+                    0% 100%
+                );
+            }
+
+            50% {
+                clip-path: polygon(
+                    0% 60%,
+                    15% 65%,
+                    34% 66%,
+                    51% 62%,
+                    67% 50%,
+                    84% 45%,
+                    100% 46%,
+                    100% 100%,
+                    0% 100%
+                );
+            }
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        /* Row */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        /* Column Base */
+        .col {
+            position: relative;
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            flex-basis: 0;
+            flex-grow: 1;
+            max-width: 100%;
+        }
+
+        /* Column Sizes (1-12) */
+        .col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+        .col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+        .col-3 { flex: 0 0 25%; max-width: 25%; }
+        .col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+        .col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+        .col-6 { flex: 0 0 50%; max-width: 50%; }
+        .col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+        .col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+        .col-9 { flex: 0 0 75%; max-width: 75%; }
+        .col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+        .col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+        .col-12 { flex: 0 0 100%; max-width: 100%; }
+
+        /* Responsive Breakpoints */
+        @media (min-width: 576px) {
+            .container { max-width: 540px; }
+            .col-sm-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+            .col-sm-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+            .col-sm-3 { flex: 0 0 25%; max-width: 25%; }
+            .col-sm-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+            .col-sm-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+            .col-sm-6 { flex: 0 0 50%; max-width: 50%; }
+            .col-sm-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+            .col-sm-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+            .col-sm-9 { flex: 0 0 75%; max-width: 75%; }
+            .col-sm-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+            .col-sm-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+            .col-sm-12 { flex: 0 0 100%; max-width: 100%; }
+        }
+
+        @media (min-width: 768px) {
+            .container { max-width: 720px; }
+            .col-md-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+            .col-md-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+            .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+            .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+            .col-md-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+            .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+            .col-md-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+            .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+            .col-md-9 { flex: 0 0 75%; max-width: 75%; }
+            .col-md-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+            .col-md-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+            .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+        }
+
+        @media (min-width: 992px) {
+            .container { max-width: 960px; }
+            .col-lg-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+            .col-lg-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+            .col-lg-3 { flex: 0 0 25%; max-width: 25%; }
+            .col-lg-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+            .col-lg-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+            .col-lg-6 { flex: 0 0 50%; max-width: 50%; }
+            .col-lg-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+            .col-lg-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+            .col-lg-9 { flex: 0 0 75%; max-width: 75%; }
+            .col-lg-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+            .col-lg-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+            .col-lg-12 { flex: 0 0 100%; max-width: 100%; }
+        }
+
+        @media (min-width: 1200px) {
+            .container { max-width: 1140px; }
+            .col-xl-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
+            .col-xl-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
+            .col-xl-3 { flex: 0 0 25%; max-width: 25%; }
+            .col-xl-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+            .col-xl-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
+            .col-xl-6 { flex: 0 0 50%; max-width: 50%; }
+            .col-xl-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
+            .col-xl-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
+            .col-xl-9 { flex: 0 0 75%; max-width: 75%; }
+            .col-xl-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
+            .col-xl-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
+            .col-xl-12 { flex: 0 0 100%; max-width: 100%; }
+        }
+
+        form {
+    display: block;
+    margin-top: 0em;
+    unicode-bidi: isolate;
+}
+
+        /* BUTTON */
+  button {
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    font-size: 1.25em;
+    color: var(--c-text-action);
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 8px !important;
+    border: 2px solid var(--c-border-primary);
+    color: var(--c-text-action);
+    font-size: 0.875rem;
+    transition: 0.15s ease;
+    width: 100%;
+    height: 40px !important;
+  }
+
+  button:hover {
+    background: #315cfd;
+    /* background: #1e1e2f; */
+    color: white;
+    /* font-size: 1.5em; */
+  }
+
+  .btn-primary {
+    background: #315cfd !important;
+    /* background: #1e1e2f !important; */
+    color: white;
+  }
+
+  .button {
+  font: inherit;
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1em;
+  height: 40px;
+  border-radius: 8px;
+  line-height: 1;
+  border: 2px solid var(--c-border-primary);
+  color: var(--c-text-action);
+  font-size: 0.875rem;
+  transition: 0.15s ease;
+  background-color: var(--c-background-primary);
+}
+.button i {
+  margin-right: 0.5rem;
+  font-size: 1.25em;
+}
+.button span {
+  font-weight: 500;
+}
+.button:hover, .button:focus {
+  border-color: var(--c-accent-primary);
+  color: var(--c-accent-primary);
+}
+
+  input {
+  font: inherit;
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 0 1em 0 1em; */
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid var(--c-border-primary);
+  color: var(--c-text-action);
+  font-size: 0.875rem;
+  transition: 0.15s ease;
+  width: 100%;
+  line-height: 1;
+}
+input::-moz-placeholder {
+  color: var(--c-text-action);
+}
+input:-ms-input-placeholder {
+  color: var(--c-text-action);
+}
+input::placeholder {
+  color: var(--c-text-action);
+}
+input:focus, input:hover {
+  border-color: var(--c-accent-primary);
+}
+
+/* Popup container - hidden by default */
+.popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Overlay */
+            z-index: 1000;
+        }
+
+        /* Popup content */
+        .popup-content {
+            position: relative;
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gauge-container">
+        <h2 class="app-name">GM1000 (LPG Meter) </h2>
+<!--        <p>Connect to device on <a href="/"><span id="sensorId"></span>.local</a></p>-->
+        <!-- Layered Gas Tank with Fill Levels and Animation -->
+
+
+       <div style="justify-content: center;
+            align-items: center;
+            margin: auto;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-direction: column;
+            flex-direction: column;">
+            <div class="gas-cylinder">
+                <div class="tank-top"></div>
+                <div class="tank-body">
+                  <div class="lpg-level" id="lpgLevel"></div>
+                </div>
+                <div class="tank-base"></div>
+            </div>
+            <p><i class='bx bx-sushi' ></i> Tank ID: <span id="sensorId"></span></p>
+            <button id="connectBleButton" style="width:48%;">Connect BLE</button>
+            <button id="disconnectBleButton" style="width:48%;">Disconnect</button>
+            <p><i class="bx bx-wifi"></i>Device connection state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-3">
+                <div class="">
+                    <div class="title">
+                        <span class=" bx bx-tachometer"></span>
+                        <p class="title-text">
+                            <span id="percentageFull">0.0</span>
+                        </p>
+                    </div>
+                    <div class="data">
+                        <p>
+                            Percentage Full
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="">
+                    <div class="title">
+                        <span class=" bx bxs-thermometer"></span>
+                        <p class="title-text">
+                            <span id="temperature">0</span>
+                        </p>
+                    </div>
+                    <div class="data">
+                        <p>
+                            Temperature
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="">
+                    <div class="title">
+                        <span class=" bx bx-signal-5"></span>
+                        <p class="title-text">
+                            <span id="signalStrength">0</span>
+                        </p>
+                    </div>
+                    <div class="data">
+                        <p>
+                            Signal Strength
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="">
+                    <div class="title">
+                        <span class=" bx bx-circle-quarter"></span>
+                        <p class="title-text">
+                            <span id="angle">0</span>
+                        </p>
+                    </div>
+                    <div class="data">
+                        <p>
+                            Angle
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="popupWifiForm" class="popup">
+            <div class="popup-content">
+                <span class="close-btn" onclick="closePopup('popupWifiForm')">&times;</span>
+                <h2 class="app-name">Connect to Wifi</h2>
+                <form id="myWifiForm" onsubmit="handleSubmit(event, 'popupWifiForm')">
+                    <div class="form-group">
+                        <label for="ssid">Name (SSID)</label>
+                        <input type="text" id="ssid" name="ssid" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pass">Password</label>
+                        <input type="password" id="pass" name="pass" class="form-control" required aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="spass">Security Password</label>
+                        <input type="password" id="spass" name="spass" class="form-control" required aria-required="true">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Connect</button>
+                </form>
+            </div>
+        </div>
+        <div id="popupSecurityCodeForm" class="popup">
+            <div class="popup-content">
+                <span class="close-btn" onclick="closePopup('popupSecurityCodeForm')">&times;</span>
+                <h2 class="app-name">Update Security Code</h2>
+                <form id="mySecurityCodeForm" onsubmit="handleSubmit(event, 'popupSecurityCodeForm')">
+                    <div class="form-group">
+                        <label for="opass">Old Password</label>
+                        <input type="password" id="opass" name="opass" class="form-control" required aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="npass">New Password</label>
+                        <input type="password" id="npass" name="npass" class="form-control" required aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="cpass">Confirm Password</label>
+                        <input type="password" id="cpass" name="cpass" class="form-control" required aria-required="true">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Connect</button>
+                </form>
+            </div>
+        </div>
+
+        <p><span class="small" onclick="openPopup('popupWifiForm')">Connect to Device</span></p>
+<!--        <p><span class="small" onclick="openPopup('popupSecurityCodeForm')">Change Device Security Code</span></p>-->
+
+        <!-- BLE Controls -->
+        <div class="row" style="margin-top:30px;">
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+                <h3>Configure WiFi via BLE</h3>
+                <input type="text" id="wifiSsid" placeholder="WiFi SSID" style="width:48%;"/>
+                <input type="password" id="wifiPass" placeholder="Password" style="width:48%;"/>
+                <button id="sendWifiBtn" style="margin-top:8px;">Send WiFi Credentials</button>
+                <p id="wifiFeedback" style="margin-top:8px;"></p>
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+
+
+    </div>
+    <!-- ==================== BLE SCRIPT ==================== -->
+    <script>
+        // DOM Elements
+        const connectBtn = document.getElementById('connectBleButton');
+        const disconnectBtn = document.getElementById('disconnectBleButton');
+        const bleState = document.getElementById('bleState');
+        const valueContainer = document.getElementById('valueContainer');
+        const timestampEl = document.getElementById('timestamp');
+        const sendWifiBtn = document.getElementById('sendWifiBtn');
+        const wifiFeedback = document.getElementById('wifiFeedback');
+
+        // BLE UUIDs (as you already had)
+        const BLE_SERVICE = '0000181a-0000-1000-8000-00805f9b34fb'.toLowerCase();
+        const NOTIFY_CHAR  = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'.toLowerCase(); // TX – notifications
+        const WRITE_CHAR   = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'.toLowerCase(); // RX – write commands
+
+        let device, server, service, notifyChar, writeChar;
+
+        connectBtn.addEventListener('click', connectBLE);
+        disconnectBtn.addEventListener('click', disconnectBLE);
+        sendWifiBtn.addEventListener('click', sendWiFiViaBLE);
+
+        function connectBLE() {
+            if (!navigator.bluetooth) {
+                alert("Web Bluetooth not supported in this browser.");
+                return;
+            }
+
+            navigator.bluetooth.requestDevice({
+                filters: [{ namePrefix: 'BURDVA GM-' }],
+                optionalServices: [BLE_SERVICE]
+            })
+            .then(d => {
+                device = d;
+                bleState.textContent = 'Connecting...';
+                bleState.style.color = '#ff9800';
+                return device.gatt.connect();
+            })
+            .then(s => {
+                server = s;
+                bleState.textContent = 'Connected';
+                bleState.style.color = '#24af37';
+                return server.getPrimaryService(BLE_SERVICE);
+            })
+            .then(s => {
+                service = s;
+                return Promise.all([
+                    service.getCharacteristic(NOTIFY_CHAR),
+                    service.getCharacteristic(WRITE_CHAR)
+                ]);
+            })
+            .then(chars => {
+                [notifyChar, writeChar] = chars;
+
+                notifyChar.startNotifications();
+                notifyChar.addEventListener('characteristicvaluechanged', handleNotification);
+
+                // Request first reading immediately
+                notifyChar.readValue().then(handleNotification);
+            })
+            .catch(err => {
+                console.error(err);
+                bleState.textContent = 'Error';
+                bleState.style.color = '#d13a30';
+            });
+        }
+
+        function disconnectBLE() {
+            if (device && device.gatt.connected) {
+                device.gatt.disconnect();
+            }
+            bleState.textContent = 'Disconnected';
+            bleState.style.color = '#d13a30';
+        }
+
+        function handleNotification(event) {
+            const rawBytes = event.target.value;
+            const rawText = new TextDecoder().decode(rawBytes);
+
+            // --- ROBUST JSON EXTRACTOR (handles , \r, \n, garbage, etc.) ---
+            const jsonStart = rawText.indexOf('{');
+            const jsonEnd   = rawText.lastIndexOf('}') + 1;
+
+            if (jsonStart === -1 || jsonEnd === 0) {
+                console.log("No JSON found in:", rawText);
+                return;
+            }
+
+            const cleanJsonString = rawText.substring(jsonStart, jsonEnd);
+
+            try {
+                const data = JSON.parse(cleanJsonString);
+
+                // Now safely update the UI
+                document.getElementById('sensorId').textContent      = data.sid  || '—';
+                document.getElementById('temperature').textContent   = (data.temp || '0') + '°C';
+                document.getElementById('angle').textContent         = (data.angle || '0') + '°';
+                document.getElementById('signalStrength').textContent= (data.signal || '0') + ' mV';
+
+                const percentage = parseFloat(data.value) || 0;
+
+                document.getElementById('percentageFull').textContent = percentage + ' %';
+                document.getElementById('lpgLevel').style.height      = percentage + '%';
+
+                // WiFi status
+                // const ip = data.ip || '';
+                // document.getElementById('networtStatus').textContent =
+                //     (ip && ip !== '0.0.0.0' && ip !== '192.168.4.1')
+                //         ? 'Connected (' + ip + ')'
+                //         : 'Not connected';
+                //
+                // console.log("Parsed JSON:", data);
+            } catch (e) {
+                console.error("JSON parse failed on:", cleanJsonString, e);
+            }
+        }
+
+        // Send WiFi credentials as plain text: SSID:Password
+        function sendWiFiViaBLE() {
+            const ssid = document.getElementById('wifiSsid').value.trim();
+            const pass = document.getElementById('wifiPass').value;
+
+            if (!ssid) {
+                wifiFeedback.textContent = "Please enter SSID";
+                wifiFeedback.style.color = 'red';
+                return;
+            }
+
+            if (!writeChar) {
+                wifiFeedback.textContent = "BLE not connected";
+                wifiFeedback.style.color = 'red';
+                return;
+            }
+
+            const command = `WIFI:${ssid}:${pass}`;
+            const encoder = new TextEncoder();
+            writeChar.writeValue(encoder.encode(command))
+                .then(() => {
+                    wifiFeedback.textContent = "WiFi credentials sent!";
+                    wifiFeedback.style.color = 'green';
+                    setTimeout(() => wifiFeedback.textContent = '', 4000);
+                })
+                .catch(err => {
+                    wifiFeedback.textContent = "Failed to send";
+                    wifiFeedback.style.color = 'red';
+                    console.error(err);
+                });
+        }
+
+        // Auto-reconnect on disconnect (optional)
+        if (navigator.bluetooth) {
+            navigator.bluetooth.addEventListener('disconnection', () => {
+                bleState.textContent = 'Disconnected';
+                bleState.style.color = '#d13a30';
+            });
+        }
+
+        window.addEventListener('beforeunload', function (event) {
+            // Your function logic here (e.g., logging some data)
+            console.log("Page is about to unload");
+            disconnectBLE();
+        });
+
+    </script>
+</body>
+
+</html>
