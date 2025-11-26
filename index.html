@@ -88,7 +88,7 @@
         @media only screen and (min-width: 641px) {
             /* for 10 inches tablet screens */
             body::before {
-                content: "© Burdva Limited";
+                content: "© Your go to app for your gas level validation";
                 font-weight: bold;
                 display: block;
                 text-align: center;
@@ -161,7 +161,7 @@
         }
 
         .title-text {
-            margin-left: 0.5rem;
+            /*margin-left: 0.5rem;*/
             height: 100%;
             font-size: 16px;
         }
@@ -177,6 +177,7 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            align-items: center;
         }
 
         .data p {
@@ -284,7 +285,7 @@
             right: 0;
             height: 30px;
             width: 100%;
-            background: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%%232DF' /></svg>") no-repeat center;
+            background: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%232DF' /></svg>") no-repeat center;
             background-size: 100% 100%;
             animation: animate 3s ease-in-out infinite;
             border-radius: 10px;
@@ -571,15 +572,15 @@ input:focus, input:hover {
             font-size: 20px;
             cursor: pointer;
         }
+        .w-100 {
+            width: 100% !important;
+        }
     </style>
 </head>
 
 <body>
     <div class="gauge-container">
-        <h2 class="app-name">GM1000 (LPG Meter) </h2>
-<!--        <p>Connect to device on <a href="/"><span id="sensorId"></span>.local</a></p>-->
-        <!-- Layered Gas Tank with Fill Levels and Animation -->
-
+        <h3 class="app-name">LPG GAS METR </h3>
 
        <div style="justify-content: center;
             align-items: center;
@@ -588,6 +589,9 @@ input:focus, input:hover {
             display: flex;
             -ms-flex-direction: column;
             flex-direction: column;">
+            <button id="connectBleButton" style="width:48%; display: none !important;">Connect Tank</button>
+            <button id="disconnectBleButton" style="width:48%; display: none !important;">Disconnect</button>
+            <p><i class="bx bx-wifi"></i> Device connection state: <strong><span id="bleState" style="color:#d13a30;">Waiting...</span></strong></p>
             <div class="gas-cylinder">
                 <div class="tank-top"></div>
                 <div class="tank-body">
@@ -596,20 +600,15 @@ input:focus, input:hover {
                 <div class="tank-base"></div>
             </div>
             <p><i class='bx bx-sushi' ></i> Tank ID: <span id="sensorId"></span></p>
-            <button id="connectBleButton" style="width:48%;">Connect BLE</button>
-            <button id="disconnectBleButton" style="width:48%;">Disconnect</button>
-            <p><i class="bx bx-wifi"></i>Device connection state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
-
         </div>
 
         <div class="row">
 
-            <div class="col-3">
+            <div class="col-6 col-md-6 col-sm-6">
                 <div class="">
                     <div class="title">
-                        <span class=" bx bx-tachometer"></span>
-                        <p class="title-text">
-                            <span id="percentageFull">0.0</span>
+                        <p class="title-text w-100">
+                            <i class=" bx bx-tachometer"></i> <span id="percentageFull">0.0</span>
                         </p>
                     </div>
                     <div class="data">
@@ -620,12 +619,11 @@ input:focus, input:hover {
                 </div>
             </div>
 
-            <div class="col-3">
+            <div class="col-6 col-md-6 col-sm-6">
                 <div class="">
                     <div class="title">
-                        <span class=" bx bxs-thermometer"></span>
-                        <p class="title-text">
-                            <span id="temperature">0</span>
+                        <p class="title-text w-100">
+                           <i class=" bx bxs-thermometer"></i> <span id="temperature">0</span>
                         </p>
                     </div>
                     <div class="data">
@@ -636,12 +634,11 @@ input:focus, input:hover {
                 </div>
             </div>
 
-            <div class="col-3">
+            <div class="col-6 col-md-6 col-sm-6">
                 <div class="">
                     <div class="title">
-                        <span class=" bx bx-signal-5"></span>
-                        <p class="title-text">
-                            <span id="signalStrength">0</span>
+                        <p class="title-text w-100">
+                            <i class=" bx bx-signal-5"></i> <span id="signalStrength">0</span>
                         </p>
                     </div>
                     <div class="data">
@@ -652,12 +649,11 @@ input:focus, input:hover {
                 </div>
             </div>
 
-            <div class="col-3">
+            <div class="col-6 col-md-6 col-sm-6">
                 <div class="">
                     <div class="title">
-                        <span class=" bx bx-circle-quarter"></span>
-                        <p class="title-text">
-                            <span id="angle">0</span>
+                        <p class="title-text w-100">
+                            <i class=" bx bx-circle-quarter"></i> <span id="angle">0</span>
                         </p>
                     </div>
                     <div class="data">
@@ -712,21 +708,17 @@ input:focus, input:hover {
             </div>
         </div>
 
-        <p><span class="small" onclick="openPopup('popupWifiForm')">Connect to Device</span></p>
+<!--        <p><span class="small" onclick="openPopup('popupWifiForm')">Connect to Device</span></p>-->
 <!--        <p><span class="small" onclick="openPopup('popupSecurityCodeForm')">Change Device Security Code</span></p>-->
 
         <!-- BLE Controls -->
-        <div class="row" style="margin-top:30px;">
-            <div class="col-4">
-            </div>
-            <div class="col-4">
-                <h3>Configure WiFi via BLE</h3>
-                <input type="text" id="wifiSsid" placeholder="WiFi SSID" style="width:48%;"/>
-                <input type="password" id="wifiPass" placeholder="Password" style="width:48%;"/>
-                <button id="sendWifiBtn" style="margin-top:8px;">Send WiFi Credentials</button>
-                <p id="wifiFeedback" style="margin-top:8px;"></p>
-            </div>
-            <div class="col-4">
+        <div class="row" style="margin-top:10px;">
+            <div class="col-12">
+                <h5>Add to WiFi Network</h5>
+                <input type="text" id="wifiSsid" placeholder="WiFi SSID" style="width:60%;"/>
+                <input type="password" id="wifiPass" placeholder="Password" style="margin-top:8px; width:60%;"/>
+                <button id="sendWifiBtn" style="margin-top:8px; width:60%;">Submit</button>
+                <p id="wifiFeedback" style="margin-top:8px; width:60%;"></p>
             </div>
         </div>
 
@@ -754,6 +746,9 @@ input:focus, input:hover {
         disconnectBtn.addEventListener('click', disconnectBLE);
         sendWifiBtn.addEventListener('click', sendWiFiViaBLE);
 
+        connectBtn.style.display = 'block';
+        disconnectBtn.style.display = 'none';
+
         function connectBLE() {
             if (!navigator.bluetooth) {
                 alert("Web Bluetooth not supported in this browser.");
@@ -774,6 +769,8 @@ input:focus, input:hover {
                 server = s;
                 bleState.textContent = 'Connected';
                 bleState.style.color = '#24af37';
+                disconnectBtn.style.display = 'block';
+                connectBtn.style.display = 'none';
                 return server.getPrimaryService(BLE_SERVICE);
             })
             .then(s => {
@@ -794,6 +791,7 @@ input:focus, input:hover {
             })
             .catch(err => {
                 console.error(err);
+                disconnectBtn.style.display = 'block';
                 bleState.textContent = 'Error';
                 bleState.style.color = '#d13a30';
             });
@@ -803,6 +801,8 @@ input:focus, input:hover {
             if (device && device.gatt.connected) {
                 device.gatt.disconnect();
             }
+            disconnectBtn.style.display = 'none';
+            connectBtn.style.display = 'block';
             bleState.textContent = 'Disconnected';
             bleState.style.color = '#d13a30';
         }
