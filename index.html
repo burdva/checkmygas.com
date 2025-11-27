@@ -724,9 +724,7 @@ input:focus, input:hover {
 
 
     </div>
-    <!-- ==================== BLE SCRIPT ==================== -->
     <script>
-        // DOM Elements
         const connectBtn = document.getElementById('connectBleButton');
         const disconnectBtn = document.getElementById('disconnectBleButton');
         const bleState = document.getElementById('bleState');
@@ -735,7 +733,6 @@ input:focus, input:hover {
         const sendWifiBtn = document.getElementById('sendWifiBtn');
         const wifiFeedback = document.getElementById('wifiFeedback');
 
-        // BLE UUIDs (as you already had)
         const BLE_SERVICE = '0000181a-0000-1000-8000-00805f9b34fb'.toLowerCase();
         const NOTIFY_CHAR  = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'.toLowerCase(); // TX – notifications
         const WRITE_CHAR   = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'.toLowerCase(); // RX – write commands
@@ -811,7 +808,27 @@ input:focus, input:hover {
             const rawBytes = event.target.value;
             const rawText = new TextDecoder().decode(rawBytes);
 
-            // --- ROBUST JSON EXTRACTOR (handles , \r, \n, garbage, etc.) ---
+            console.log(rawText);
+
+            if (rawText.startsWith('WIFI_')) {
+                const feedback = document.getElementById('wifiFeedback');
+                if (rawText === 'WIFI_CONNECTING') {
+                    feedback.textContent = 'Connecting to WiFi...';
+                    feedback.style.color = '#ff9800';
+                } else if (rawText.startsWith('WIFI_CONNECTED:')) {
+                    const ip = rawText.split(':')[1];
+                    feedback.textContent = `Connected! IP: ${ip}`;
+                    feedback.style.color = 'green';
+                    // Optional: auto-disconnect BLE after success?
+                    // setTimeout(disconnectBLE, 3000);
+                } else if (rawText.includes('FAILED')) {
+                    let msg = rawText.replace('WIFI_FAILED:', '');
+                    feedback.textContent = 'Connection failed: ' + (msg || 'unknown error');
+                    feedback.style.color = 'red';
+                }
+                return;
+            }
+
             const jsonStart = rawText.indexOf('{');
             const jsonEnd   = rawText.lastIndexOf('}') + 1;
 
@@ -861,12 +878,12 @@ input:focus, input:hover {
             }
 
             if (!writeChar) {
-                wifiFeedback.textContent = "BLE not connected";
+                wifiFeedback.textContent = "Device not connected";
                 wifiFeedback.style.color = 'red';
                 return;
             }
 
-            const command = `WIFI:${ssid}:${pass}`;
+            const command = `${ssid}:${pass}`;
             const encoder = new TextEncoder();
             writeChar.writeValue(encoder.encode(command))
                 .then(() => {
