@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
     <title>Check My Gas - Dashboard</title>
     <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -666,6 +670,38 @@ input:focus, input:hover {
                     </div>
                 </div>
             </div>
+
+
+            <div class="col-6 col-md-6 col-sm-6">
+                <div class="">
+                    <div class="title">
+                        <p class="title-text w-100">
+                            <i class=" bx bxs-cube"></i><span id="mass">0</span>
+                        </p>
+                    </div>
+                    <div class="data">
+                        <p>
+                            Mass
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-6 col-sm-6">
+                <div class="">
+                    <div class="title">
+                        <p class="title-text w-100">
+                            <i class="bx bx-link"></i><span id="ip"></span>
+                        </p>
+                    </div>
+                    <div class="data">
+                        <p>
+                            IP Address
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div id="popupWifiForm" class="popup">
@@ -721,10 +757,34 @@ input:focus, input:hover {
                 <input type="text" id="wifiSsid" placeholder="WiFi SSID" style="width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
                 <input type="password" id="wifiPass" placeholder="Password" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
                 <button id="sendWifiBtn" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;">Submit</button>
-                <p id="wifiFeedback" style="margin-top:8px; width:60%;"></p>
             </div>
         </div>
 
+        <div class="row" style="margin-top:10px;">
+            <div class="col-12">
+                <h5>Update Tank Height (mm)</h5>
+                <input type="number" id="tankHeight" placeholder="Tank Height" style="width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
+                <button id="sendTankHeightBtn" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;">Submit</button>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+            <div class="col-12">
+                <h5>Update Tank Circumference (m)</h5>
+                <input type="number" id="tankCircumference" placeholder="Tank Circumference" style="width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
+                <button id="sendTankCircumferenceBtn" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;">Submit</button>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+            <div class="col-12">
+                <p id="feedback" style="margin-top:8px; width:60%;"></p>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
     </div>
     <script>
@@ -734,7 +794,9 @@ input:focus, input:hover {
         const valueContainer = document.getElementById('valueContainer');
         const timestampEl = document.getElementById('timestamp');
         const sendWifiBtn = document.getElementById('sendWifiBtn');
-        const wifiFeedback = document.getElementById('wifiFeedback');
+        const sendTankHeightBtn = document.getElementById('sendTankHeightBtn');
+        const sendTankCircumferenceBtn = document.getElementById('sendTankCircumferenceBtn');
+        const feedback = document.getElementById('feedback');
 
         const BLE_SERVICE = '0000181a-0000-1000-8000-00805f9b34fb'.toLowerCase();
         const NOTIFY_CHAR  = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'.toLowerCase(); // TX – notifications
@@ -745,6 +807,8 @@ input:focus, input:hover {
         connectBtn.addEventListener('click', connectBLE);
         disconnectBtn.addEventListener('click', disconnectBLE);
         sendWifiBtn.addEventListener('click', sendWiFiViaBLE);
+        sendTankCircumferenceBtn.addEventListener('click', sendTankCircumferenceViaBLE);
+        sendTankHeightBtn.addEventListener('click', sendTankHeightViaBLE);
 
         connectBtn.style.display = 'block';
         disconnectBtn.style.display = 'none';
@@ -850,6 +914,7 @@ input:focus, input:hover {
                 document.getElementById('temperature').textContent   = (data.temp || '0') + '°C';
                 document.getElementById('angle').textContent         = (data.angle || '0') + '°';
                 document.getElementById('signalStrength').textContent= (data.signal || '0') + ' mV';
+                document.getElementById('mass').textContent = (data.mass || '0') + " kg";
 
                 const percentage = parseFloat(data.value) || 0;
 
@@ -857,7 +922,8 @@ input:focus, input:hover {
                 document.getElementById('lpgLevel').style.height      = percentage + '%';
 
                 // WiFi status
-                // const ip = data.ip || '';
+                // const _ip = data.ip || '';
+                document.getElementById('ip').textContent = data.ip || '';
                 // document.getElementById('networtStatus').textContent =
                 //     (ip && ip !== '0.0.0.0' && ip !== '192.168.4.1')
                 //         ? 'Connected (' + ip + ')'
@@ -875,14 +941,14 @@ input:focus, input:hover {
             const pass = document.getElementById('wifiPass').value;
 
             if (!ssid) {
-                wifiFeedback.textContent = "Please enter SSID";
-                wifiFeedback.style.color = 'red';
+                feedback.textContent = "Please enter SSID";
+                feedback.style.color = 'red';
                 return;
             }
 
             if (!writeChar) {
-                wifiFeedback.textContent = "Device not connected";
-                wifiFeedback.style.color = 'red';
+                feedback.textContent = "Device not connected";
+                feedback.style.color = 'red';
                 return;
             }
 
@@ -890,13 +956,75 @@ input:focus, input:hover {
             const encoder = new TextEncoder();
             writeChar.writeValue(encoder.encode(command))
                 .then(() => {
-                    wifiFeedback.textContent = "WiFi credentials sent!";
-                    wifiFeedback.style.color = 'green';
-                    setTimeout(() => wifiFeedback.textContent = '', 4000);
+                    feedback.textContent = "WiFi credentials sent!";
+                    feedback.style.color = 'green';
+                    setTimeout(() => feedback.textContent = '', 8000);
                 })
                 .catch(err => {
-                    wifiFeedback.textContent = "Failed to send";
-                    wifiFeedback.style.color = 'red';
+                    feedback.textContent = "Failed to send";
+                    feedback.style.color = 'red';
+                    console.error(err);
+                });
+        }
+
+        // Send Tank height as plain text: SSID:value
+        function sendTankHeightViaBLE() {
+            const tankHeight = document.getElementById('tankHeight').value.trim();
+
+            if (!tankHeight) {
+                feedback.textContent = "Please enter tank height";
+                feedback.style.color = 'red';
+                return;
+            }
+
+            if (!writeChar) {
+                feedback.textContent = "Device not connected";
+                feedback.style.color = 'red';
+                return;
+            }
+
+            const command = `UPDATE_TANK_HEIGHT:${tankHeight}`;
+            const encoder = new TextEncoder();
+            writeChar.writeValue(encoder.encode(command))
+                .then(() => {
+                    feedback.textContent = "Tank height sent!";
+                    feedback.style.color = 'green';
+                    setTimeout(() => feedback.textContent = '', 40000);
+                })
+                .catch(err => {
+                    feedback.textContent = "Failed to send";
+                    feedback.style.color = 'red';
+                    console.error(err);
+                });
+        }
+
+        // Send Tank circumference as plain text: SSID:value
+        function sendTankCircumferenceViaBLE() {
+            const tankCircumference = document.getElementById('tankCircumference').value.trim();
+
+            if (!tankCircumference) {
+                feedback.textContent = "Please enter tank circumference";
+                feedback.style.color = 'red';
+                return;
+            }
+
+            if (!writeChar) {
+                feedback.textContent = "Device not connected";
+                feedback.style.color = 'red';
+                return;
+            }
+
+            const command = `UPDATE_TANK_CIRCUMFERENCE:${tankCircumference}`;
+            const encoder = new TextEncoder();
+            writeChar.writeValue(encoder.encode(command))
+                .then(() => {
+                    feedback.textContent = "Tank circumference sent!";
+                    feedback.style.color = 'green';
+                    setTimeout(() => feedback.textContent = '', 40000);
+                })
+                .catch(err => {
+                    feedback.textContent = "Failed to send";
+                    feedback.style.color = 'red';
                     console.error(err);
                 });
         }
