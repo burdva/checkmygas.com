@@ -283,6 +283,20 @@
         border-bottom-right-radius: 5px;
         }
 
+        .lpg-level.very-low {
+            background: linear-gradient(to top,
+                        #f30 0%,   /* deep red */
+                        #f60 50%,  /* orange-red */
+                        #ff8000 100%); /* bright orange */
+        }
+
+        .lpg-level.low {
+            background: linear-gradient(to top,
+                        #f57c00 0%,   /* orange */
+                        #ffab00 50%,  /* amber */
+                        #ffd54f 100%);/* light yellow */
+        }
+
         /* A wave shape at the top of .lpg-level */
         .lpg-level::after {
             content: "";
@@ -296,6 +310,16 @@
             background-size: 100% 100%;
             animation: animate 3s ease-in-out infinite;
             border-radius: 10px;
+        }
+
+        .lpg-level.very-low::after {
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%23F60' /></svg>") no-repeat center;
+            background-size: 100% 100%;
+        }
+
+        .lpg-level.low::after {
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%23ffab00' /></svg>") no-repeat center;
+            background-size: 100% 100%;
         }
 
         /* ========== BASE (the bottom ring/stand) ========== */
@@ -602,7 +626,7 @@ input:focus, input:hover {
             <div class="gas-cylinder">
                 <div class="tank-top"></div>
                 <div class="tank-body">
-                  <div class="lpg-level" id="lpgLevel"></div>
+                  <div class="lpg-level very-low" id="lpgLevel"></div>
                 </div>
                 <div class="tank-base"></div>
             </div>
@@ -791,8 +815,6 @@ input:focus, input:hover {
         const connectBtn = document.getElementById('connectBleButton');
         const disconnectBtn = document.getElementById('disconnectBleButton');
         const bleState = document.getElementById('bleState');
-        const valueContainer = document.getElementById('valueContainer');
-        const timestampEl = document.getElementById('timestamp');
         const sendWifiBtn = document.getElementById('sendWifiBtn');
         const sendTankHeightBtn = document.getElementById('sendTankHeightBtn');
         const sendTankCircumferenceBtn = document.getElementById('sendTankCircumferenceBtn');
@@ -921,15 +943,14 @@ input:focus, input:hover {
                 document.getElementById('percentageFull').textContent = percentage + ' %';
                 document.getElementById('lpgLevel').style.height      = percentage + '%';
 
-                // WiFi status
-                // const _ip = data.ip || '';
                 document.getElementById('ip').textContent = data.ip || '';
-                // document.getElementById('networtStatus').textContent =
-                //     (ip && ip !== '0.0.0.0' && ip !== '192.168.4.1')
-                //         ? 'Connected (' + ip + ')'
-                //         : 'Not connected';
-                //
-                // console.log("Parsed JSON:", data);
+                const levelElement = document.querySelector('.lpg-level');
+                levelElement.classList.remove('very-low', 'low');
+                if (percentage <= 10) {
+                    levelElement.classList.add('very-low');
+                } else if (percentage <= 25) {
+                    levelElement.classList.add('low');
+                }
             } catch (e) {
                 console.error("JSON parse failed on:", cleanJsonString, e);
             }
