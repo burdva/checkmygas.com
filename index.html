@@ -606,6 +606,32 @@ input:focus, input:hover {
         .w-100 {
             width: 100% !important;
         }
+
+        .whatsapp-btn {
+              width: 50%;
+            text-align: center;
+            justify-content: center;
+            /*display: inline-flex !important;*/
+            align-items: center;
+          gap: 8px;
+          padding: 12px 18px;
+          background-color: #25D366; /* WhatsApp Green */
+          color: #ffffff;
+          text-decoration: none;
+            font-size: 10px;
+            font-weight: 400;
+            border-radius: 22px;
+          transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .whatsapp-btn i {
+          font-size: 20px;
+        }
+
+        .whatsapp-btn:hover {
+          background-color: #1ebe5d;
+          transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -631,6 +657,7 @@ input:focus, input:hover {
                 <div class="tank-base"></div>
             </div>
             <p><i class='bx bx-sushi' ></i> Tank ID: <span id="sensorId"></span></p>
+
         </div>
 
         <div class="row">
@@ -773,6 +800,22 @@ input:focus, input:hover {
 
 <!--        <p><span class="small" onclick="openPopup('popupWifiForm')">Connect to Device</span></p>-->
 <!--        <p><span class="small" onclick="openPopup('popupSecurityCodeForm')">Change Device Security Code</span></p>-->
+        <div class="row" style="margin-top:10px;">
+            <div class="col-12">
+                <!-- WhatsApp Add Tank Button -->
+                <a
+                  id="addTankWhatsappBtn"
+                  href="https://wa.me/2348074566227?text=ADD_TANK"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="whatsapp-btn"
+                  style="display: none !important;"
+                >
+                  <i class="bx bx-whatsapp"></i>
+                  Add Tank via WhatsApp
+                </a>
+            </div>
+        </div>
 
         <!-- BLE Controls -->
         <div class="row" style="margin-top:10px;">
@@ -818,6 +861,7 @@ input:focus, input:hover {
         const sendWifiBtn = document.getElementById('sendWifiBtn');
         const sendTankHeightBtn = document.getElementById('sendTankHeightBtn');
         const sendTankCircumferenceBtn = document.getElementById('sendTankCircumferenceBtn');
+        const addTankWhatsappBtn = document.getElementById("addTankWhatsappBtn");
         const feedback = document.getElementById('feedback');
 
         const BLE_SERVICE = '0000181a-0000-1000-8000-00805f9b34fb'.toLowerCase();
@@ -834,6 +878,7 @@ input:focus, input:hover {
 
         connectBtn.style.display = 'block';
         disconnectBtn.style.display = 'none';
+        addTankWhatsappBtn.style.display = 'none';
 
         function connectBLE() {
             if (!navigator.bluetooth) {
@@ -889,6 +934,7 @@ input:focus, input:hover {
             }
             disconnectBtn.style.display = 'none';
             connectBtn.style.display = 'block';
+            addTankWhatsappBtn.style.display = 'none';
             bleState.textContent = 'Disconnected';
             bleState.style.color = '#d13a30';
         }
@@ -951,6 +997,7 @@ input:focus, input:hover {
                 } else if (percentage <= 25) {
                     levelElement.classList.add('low');
                 }
+                updateWhatsappDevice(data.sid  || "");
             } catch (e) {
                 console.error("JSON parse failed on:", cleanJsonString, e);
             }
@@ -1064,6 +1111,14 @@ input:focus, input:hover {
             disconnectBLE();
         });
 
+        function updateWhatsappDevice(deviceId) {
+            if (!addTankWhatsappBtn) return;
+            addTankWhatsappBtn.style.display = 'inline-flex';
+
+            // Encode device ID for URL
+            const encodedId = `%3A${encodeURIComponent(deviceId)}`;
+            addTankWhatsappBtn.href = `https://wa.me/2348074566227?text=ADD_TANK${encodedId}`;
+        }
     </script>
 </body>
 
