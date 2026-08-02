@@ -4,303 +4,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CheckMyGas — see your LPG tank level in real time. Connect your Burdva gas monitor over Bluetooth and never run out of gas unexpectedly.">
+    <meta name="theme-color" content="#F8FAFD">
     <meta name="google-adsense-account" content="ca-pub-6802954878116144">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
     <link rel="icon" type="image/x-icon" href="favicon.png">
-    <title>Check My Gas - Dashboard</title>
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>CheckMyGas — Smart LPG Tank Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0" rel="stylesheet">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6802954878116144"
      crossorigin="anonymous"></script>
     <style>
-    @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
         :root {
-          --c-text-primary: #282a32;
-          --c-text-secondary: #686b87;
-          --c-text-action: #404089;
-          --c-accent-primary: #434ce8;
-          --c-border-primary: #eff1f6;
-          --c-background-primary: #ffffff;
-          --c-background-secondary: #fdfcff;
-          --c-background-tertiary: #ecf3fe;
-          --c-background-quaternary: #e9ecf4;
+            --surface: #F8FAFD;
+            --surface-card: #FFFFFF;
+            --surface-tonal: #F0F4F9;
+            --surface-blue: #E8F0FE;
+            --outline: #DADCE0;
+            --outline-soft: #E9EDF2;
+            --text-primary: #1F1F1F;
+            --text-secondary: #5F6368;
+            --blue: #1A73E8;
+            --blue-dark: #185ABC;
+            --blue-light: #8AB4F8;
+            --green: #1E8E3E;
+            --amber: #F9AB00;
+            --red: #D93025;
+            --radius-card: 24px;
+            --shadow-card: 0 1px 2px rgba(60, 64, 67, 0.10), 0 1px 3px 1px rgba(60, 64, 67, 0.08);
         }
-        html {
-            font-family: system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
+
+        * { box-sizing: border-box; }
+
+        html, body {
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            justify-content: center;
-            align-items: center;
-            background: var(--c-background-secondary);
+            padding: 0;
         }
 
         body {
+            font-family: "Roboto", system-ui, -apple-system, sans-serif;
+            background: var(--surface);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            user-select: none;
+        }
+
+        .shell {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 20px 64px;
+        }
+
+        /* ---------- Top app bar ---------- */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--outline-soft);
+            /* favicon.png has large whitespace padding — zoom in on the mark */
+            background: #fff url('favicon.png') no-repeat 47% 49%;
+            background-size: 300%;
+        }
+
+        .brand-name {
+            font-family: "Outfit", "Roboto", sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+        .brand-name b { color: #F2220D; font-weight: 600; }
+
+        /* Connection status chip */
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: var(--surface-tonal);
+            border: 1px solid var(--outline-soft);
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+            flex: none;
+            transition: background 0.2s ease;
+        }
+        .status-chip.is-connecting .status-dot { background: var(--amber); }
+        .status-chip.is-connected .status-dot {
+            background: var(--green);
+            box-shadow: 0 0 0 4px rgba(30, 142, 62, 0.15);
+        }
+
+        /* ---------- Hero card ---------- */
+        .hero {
+            background: var(--surface-card);
+            border-radius: 28px;
+            box-shadow: var(--shadow-card);
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 48px;
+            margin-bottom: 24px;
+        }
+
+        .hero-reading { flex: 1; min-width: 0; }
+
+        .hero-eyebrow {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: none;
+            margin: 0 0 4px;
+        }
+
+        .hero-value {
+            font-family: "Outfit", "Roboto", sans-serif;
+            font-weight: 600;
+            font-size: clamp(4rem, 12vw, 6.5rem);
+            line-height: 1;
+            letter-spacing: -0.03em;
             margin: 0;
             display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .hero-value.is-empty { color: #C4C7CC; }
+
+        .hero-value .unit {
+            font-size: 0.35em;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0;
+        }
+
+        .hero-sub {
+            margin: 8px 0 28px;
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+        .hero-sub .tank-id { font-weight: 500; color: var(--text-primary); }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ---------- Buttons (Material pill) ---------- */
+        .btn {
+            font-family: "Roboto", sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            width: 100%;
-            line-height: 1.5;
-            min-height: 100vh;
-            font-family: "Be Vietnam Pro", sans-serif;
-            background-color: var(--c-background-secondary);
-            color: var(--c-text-primary);
+            gap: 8px;
+            height: 48px;
+            padding: 0 28px;
+            border-radius: 999px;
+            transition: box-shadow 0.15s ease, background 0.15s ease, transform 0.1s ease;
+            text-decoration: none;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+        .btn-filled {
+            background: var(--blue);
+            color: #fff;
+        }
+        .btn-filled:hover {
+            background: var(--blue-dark);
+            box-shadow: 0 1px 3px 1px rgba(26, 115, 232, 0.3);
         }
 
-        .app-name {
-            font-size: 1.5em;
-            font-weight: bold;
-            height: 100%;
+        .btn-tonal {
+            background: var(--surface-blue);
+            color: var(--blue-dark);
         }
+        .btn-tonal:hover { background: #D7E5FC; }
 
-        .app-name {
-            background: linear-gradient(to right, #9521bf, #728be2) !important;
-            background-clip: text !important;
-            color: transparent !important;
-            font-weight: 800;
-            font-size: 2.5em;
-            text-decoration: none !important;
+        .btn-whatsapp {
+            background: #E7F8EE;
+            color: #128C4B;
         }
+        .btn-whatsapp:hover { background: #D3F2E1; }
+        .btn-whatsapp svg { width: 20px; height: 20px; flex: none; }
 
-        .text-blue {
-            color: #007bff;
-        }
+        .hidden { display: none !important; }
 
-        @media  only screen and (max-width: 641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
-            /* for 10 inches tablet screens */
-            body::before {
-                content: "Dream it, live it.";
-                /*font-weight: bold;*/
-                display: block;
-                text-align: center;
-                background: linear-gradient(to right, #9521bf, #728be2) !important; /* Semi-transparent yellow */
-                color: #FFFFFF;
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 99;
-            }
-            .gauge-container {
-                width: 100% !important;
-                margin: 0px !important;
-            }
-        }
-
-
-        @media only screen and (min-width: 641px) {
-            /* for 10 inches tablet screens */
-            body::before {
-                content: "© Your go to app for your gas level validation";
-                /*font-weight: bold;*/
-                display: block;
-                text-align: center;
-                background: linear-gradient(to right, #9521bf, #728be2) !important; /* Semi-transparent yellow */
-                color: #FFFFFF;
-                /*color: var(--c-text-primary);*/
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 99;
-            }
-            .gauge-container {
-                width: 45% !important;
-            }
-        }
-
-        h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: black;
-        }
-
-        .gauge-container {
-            width: 45%;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .btn-group-vertical {
-            display: block;
-            margin-top: 20px;
-        }
-
-        .canvas-id {
-            /* display: block; */
-            display: none;
-            margin: auto;
-        }
-
-        .card-alt {
-            padding: 1rem;
-            /* background-color: #4b4b4b; */
-            /* box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); */
-            max-width: 320px;
-            /* border-radius: 20px; */
-            color: black;
-            margin-bottom: 16px;
-        }
-
-        .card-active {
-            background-color: #57abfa;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .title {
-            display: flex;
-            align-items: center;
-        }
-
-        .title span {
-            width: 1.5rem;
-        }
-
-        .title span svg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /* color: #ffffff; */
-            height: 1rem;
-        }
-
-        .title-text {
-            /*margin-left: 0.5rem;*/
-            height: 100%;
-            font-size: 16px;
-        }
-
-        .percent {
-            margin-left: 0.5rem;
-            /* color: #02972f; */
-            font-weight: 600;
-            display: flex;
-        }
-
-        .data {
+        /* ---------- Cylinder gauge ---------- */
+        .gauge {
+            flex: none;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             align-items: center;
+            gap: 10px;
         }
 
-        .data p {
-            margin-top: 0.1rem;
-            margin-bottom: 1rem;
-            /* color: #1F2937; */
-            font-size: 12px;
-            /* line-height: 2.5rem; */
-            font-weight: 700;
-            text-align: left;
-        }
-
-        .data .range {
-            position: relative;
-            background-color: #E5E7EB;
-            width: 100%;
-            height: 0.5rem;
-            border-radius: 0.25rem;
-        }
-
-        .data .range .fill {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #10B981;
-            width: 76%;
-            height: 100%;
-            border-radius: 0.25rem;
-        }
-
-        span.bx {
-          font-size: 1.5rem;
-        }
-
-        /* ========== GAS CYLINDER CONTAINER ========== */
+        /* Original metallic cylinder: cap, body, base.
+           The fixed 60x90 container squashes the children down to the
+           original compact tank size — same as the old site. */
         .gas-cylinder {
-        display: flex;
-        flex-direction: column;
-        align-items: center; /* horizontally center the top/body/base */
-        width: 60px;
-        height: 90px;
-        margin-left: 20px;
-        margin-right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60px;
+            height: 90px;
         }
 
-        /* ========== TOP (the elliptical "cap") ========== */
         .tank-top {
-        width: 24px;
-        height: 25px;
-        border-radius: 5px 5px 0 0; /* elliptical top */
-
-        /* Metallic radial gradient for a 3D effect */
-        background: radial-gradient(circle at 50% 30%,
-                    #bbb 0%,
-                    #999 40%,
-                    #777 80%,
-                    #666 100%);
-        box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+            width: 24px;
+            height: 25px;
+            border-radius: 5px 5px 0 0;
+            background: radial-gradient(circle at 50% 30%,
+                        #bbb 0%,
+                        #999 40%,
+                        #777 80%,
+                        #666 100%);
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
         }
 
-        /* ========== BODY (middle container) ========== */
         .tank-body {
-        width: 50px;
-        height: 200px;
-        border-radius: 15px; /* fully rounded sides */
-
-        /* Another radial gradient for the cylinder body */
-        background: radial-gradient(circle at 50% 30%,
-                    #bbb 0%,
-                    #999 40%,
-                    #777 80%,
-                    #666 100%);
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-
-        /* We allow the fill to be absolutely positioned inside */
-        position: relative;
-        overflow: hidden; /* to clip the fill’s top edges */
+            width: 50px;
+            height: 200px;
+            border-radius: 15px;
+            background: radial-gradient(circle at 50% 30%,
+                        #bbb 0%,
+                        #999 40%,
+                        #777 80%,
+                        #666 100%);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* The fill gradient inside the body */
+        .tank-base {
+            width: 28px;
+            height: 10px;
+            border-radius: 0 0 3px 3px;
+            background: radial-gradient(circle at 50% 70%,
+                        #bbb 0%,
+                        #999 40%,
+                        #777 80%,
+                        #666 100%);
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
+        }
+
         .lpg-level {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        /* default fill ~ 50%, overridden in JS */
-        height: 5%;
-        /* Liquid/gas gradient */
-        background: linear-gradient(to top,
-                    #1af 0%,
-                    #2df 50%,
-                    #5ff 100%);
-        transition: height 0.3s;
-        /* Keep bottom corners round to match cylinder shape */
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-        }
-
-        .lpg-level.very-low {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5%;
             background: linear-gradient(to top,
-                        #f30 0%,   /* deep red */
-                        #f60 50%,  /* orange-red */
-                        #ff8000 100%); /* bright orange */
+                        #1af 0%,
+                        #2df 50%,
+                        #5ff 100%);
+            transition: height 0.6s cubic-bezier(0.2, 0, 0, 1), background 0.3s ease;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
         }
 
         .lpg-level.low {
             background: linear-gradient(to top,
-                        #f57c00 0%,   /* orange */
-                        #ffab00 50%,  /* amber */
-                        #ffd54f 100%);/* light yellow */
+                        #f57c00 0%,
+                        #ffab00 50%,
+                        #ffd54f 100%);
         }
 
-        /* A wave shape at the top of .lpg-level */
+        .lpg-level.very-low {
+            background: linear-gradient(to top,
+                        #f30 0%,
+                        #f60 50%,
+                        #ff8000 100%);
+        }
+
+        /* animated wave on top of the liquid */
         .lpg-level::after {
             content: "";
             position: absolute;
@@ -308,16 +325,10 @@
             left: 0;
             right: 0;
             height: 30px;
-            width: 100%;
             background: url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%232DF' /></svg>") no-repeat center;
             background-size: 100% 100%;
-            animation: animate 3s ease-in-out infinite;
+            animation: wave 3s ease-in-out infinite;
             border-radius: 10px;
-        }
-
-        .lpg-level.very-low::after {
-            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%23F60' /></svg>") no-repeat center;
-            background-size: 100% 100%;
         }
 
         .lpg-level.low::after {
@@ -325,500 +336,305 @@
             background-size: 100% 100%;
         }
 
-        /* ========== BASE (the bottom ring/stand) ========== */
-        .tank-base {
-        width: 28px;
-        height: 10px;
-        border-radius: 0 0 3px 3px; /* elliptical bottom */
-
-        background: radial-gradient(circle at 50% 70%,
-                    #bbb 0%,
-                    #999 40%,
-                    #777 80%,
-                    #666 100%);
-        box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+        .lpg-level.very-low::after {
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 13'><path d='M0,20 C30,0 70,40 100,20 L100,0 L0,0 Z' fill='%23F60' /></svg>") no-repeat center;
+            background-size: 100% 100%;
         }
 
-        @keyframes animate {
-            0%,
-            100% {
-                clip-path: polygon(
-                    0% 45%,
-                    16% 44%,
-                    33% 50%,
-                    54% 60%,
-                    70% 61%,
-                    84% 59%,
-                    100% 52%,
-                    100% 100%,
-                    0% 100%
-                );
+        @keyframes wave {
+            0%, 100% {
+                clip-path: polygon(0% 45%, 16% 44%, 33% 50%, 54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
             }
-
             50% {
-                clip-path: polygon(
-                    0% 60%,
-                    15% 65%,
-                    34% 66%,
-                    51% 62%,
-                    67% 50%,
-                    84% 45%,
-                    100% 46%,
-                    100% 100%,
-                    0% 100%
-                );
+                clip-path: polygon(0% 60%, 15% 65%, 34% 66%, 51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
             }
         }
 
-        /* Container */
-        .container {
-            width: 100%;
-            padding-right: 15px;
-            padding-left: 15px;
-            margin-right: auto;
-            margin-left: auto;
+        @media (prefers-reduced-motion: reduce) {
+            .lpg-level::after { animation: none; }
+            .lpg-level { transition: none; }
         }
 
-        /* Row */
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -15px;
-            margin-left: -15px;
+        .gauge-caption {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-secondary);
         }
 
-        /* Column Base */
-        .col {
-            position: relative;
-            width: 100%;
-            padding-right: 15px;
-            padding-left: 15px;
-            flex-basis: 0;
-            flex-grow: 1;
-            max-width: 100%;
+        /* ---------- Stat tiles ---------- */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
         }
 
-        /* Column Sizes (1-12) */
-        .col-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-        .col-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-        .col-3 { flex: 0 0 25%; max-width: 25%; }
-        .col-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-        .col-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
-        .col-6 { flex: 0 0 50%; max-width: 50%; }
-        .col-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
-        .col-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-        .col-9 { flex: 0 0 75%; max-width: 75%; }
-        .col-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
-        .col-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
-        .col-12 { flex: 0 0 100%; max-width: 100%; }
-
-        /* Responsive Breakpoints */
-        @media (min-width: 576px) {
-            .container { max-width: 540px; }
-            .col-sm-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-            .col-sm-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-            .col-sm-3 { flex: 0 0 25%; max-width: 25%; }
-            .col-sm-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-            .col-sm-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
-            .col-sm-6 { flex: 0 0 50%; max-width: 50%; }
-            .col-sm-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
-            .col-sm-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-            .col-sm-9 { flex: 0 0 75%; max-width: 75%; }
-            .col-sm-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
-            .col-sm-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
-            .col-sm-12 { flex: 0 0 100%; max-width: 100%; }
-        }
-
-        @media (min-width: 768px) {
-            .container { max-width: 720px; }
-            .col-md-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-            .col-md-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-            .col-md-3 { flex: 0 0 25%; max-width: 25%; }
-            .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-            .col-md-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
-            .col-md-6 { flex: 0 0 50%; max-width: 50%; }
-            .col-md-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
-            .col-md-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-            .col-md-9 { flex: 0 0 75%; max-width: 75%; }
-            .col-md-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
-            .col-md-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
-            .col-md-12 { flex: 0 0 100%; max-width: 100%; }
-        }
-
-        @media (min-width: 992px) {
-            .container { max-width: 960px; }
-            .col-lg-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-            .col-lg-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-            .col-lg-3 { flex: 0 0 25%; max-width: 25%; }
-            .col-lg-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-            .col-lg-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
-            .col-lg-6 { flex: 0 0 50%; max-width: 50%; }
-            .col-lg-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
-            .col-lg-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-            .col-lg-9 { flex: 0 0 75%; max-width: 75%; }
-            .col-lg-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
-            .col-lg-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
-            .col-lg-12 { flex: 0 0 100%; max-width: 100%; }
-        }
-
-        @media (min-width: 1200px) {
-            .container { max-width: 1140px; }
-            .col-xl-1 { flex: 0 0 8.333333%; max-width: 8.333333%; }
-            .col-xl-2 { flex: 0 0 16.666667%; max-width: 16.666667%; }
-            .col-xl-3 { flex: 0 0 25%; max-width: 25%; }
-            .col-xl-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
-            .col-xl-5 { flex: 0 0 41.666667%; max-width: 41.666667%; }
-            .col-xl-6 { flex: 0 0 50%; max-width: 50%; }
-            .col-xl-7 { flex: 0 0 58.333333%; max-width: 58.333333%; }
-            .col-xl-8 { flex: 0 0 66.666667%; max-width: 66.666667%; }
-            .col-xl-9 { flex: 0 0 75%; max-width: 75%; }
-            .col-xl-10 { flex: 0 0 83.333333%; max-width: 83.333333%; }
-            .col-xl-11 { flex: 0 0 91.666667%; max-width: 91.666667%; }
-            .col-xl-12 { flex: 0 0 100%; max-width: 100%; }
-        }
-
-        form {
-    display: block;
-    margin-top: 0em;
-    unicode-bidi: isolate;
-}
-
-        /* BUTTON */
-  button {
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    font-size: 1.25em;
-    color: var(--c-text-action);
-    padding: 0;
-    font: inherit;
-    color: inherit;
-    text-decoration: none;
-    border-radius: 8px !important;
-    border: 2px solid var(--c-border-primary);
-    color: var(--c-text-action);
-    font-size: 0.875rem;
-    transition: 0.15s ease;
-    width: 100%;
-    height: 40px !important;
-  }
-
-  button:hover {
-    background: #315cfd;
-    /* background: #1e1e2f; */
-    color: white;
-    /* font-size: 1.5em; */
-  }
-
-  .btn-primary {
-    background: #315cfd !important;
-    /* background: #1e1e2f !important; */
-    color: white;
-  }
-
-  .button {
-  font: inherit;
-  color: inherit;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1em;
-  height: 40px;
-  border-radius: 8px;
-  line-height: 1;
-  border: 2px solid var(--c-border-primary);
-  color: var(--c-text-action);
-  font-size: 0.875rem;
-  transition: 0.15s ease;
-  background-color: var(--c-background-primary);
-}
-.button i {
-  margin-right: 0.5rem;
-  font-size: 1.25em;
-}
-.button span {
-  font-weight: 500;
-}
-.button:hover, .button:focus {
-  border-color: var(--c-accent-primary);
-  color: var(--c-accent-primary);
-}
-
-  input {
-  font: inherit;
-  color: inherit;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  /* padding: 0 1em 0 1em; */
-  height: 40px;
-  border-radius: 8px;
-  border: 2px solid var(--c-border-primary);
-  color: var(--c-text-action);
-  font-size: 0.875rem;
-  transition: 0.15s ease;
-  width: 100%;
-  line-height: 1;
-}
-input::-moz-placeholder {
-  color: var(--c-text-action);
-}
-input:-ms-input-placeholder {
-  color: var(--c-text-action);
-}
-input::placeholder {
-  color: var(--c-text-action);
-}
-input:focus, input:hover {
-  border-color: var(--c-accent-primary);
-}
-
-/* Popup container - hidden by default */
-.popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Overlay */
-            z-index: 1000;
-        }
-
-        /* Popup content */
-        .popup-content {
-            position: relative;
-            background-color: white;
-            margin: 15% auto;
+        .stat {
+            background: var(--surface-card);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
             padding: 20px;
-            width: 300px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Close button */
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .w-100 {
-            width: 100% !important;
-        }
-
-        .whatsapp-btn {
-              width: 50%;
-            text-align: center;
-            justify-content: center;
-            /*display: inline-flex !important;*/
+            display: flex;
             align-items: center;
-          gap: 8px;
-          padding: 12px 18px;
-          background-color: #25D366; /* WhatsApp Green */
-          color: #ffffff;
-          text-decoration: none;
-            font-size: 10px;
-            font-weight: 400;
-            border-radius: 22px;
-          transition: background-color 0.2s ease, transform 0.1s ease;
+            gap: 14px;
+            min-width: 0;
         }
 
-        .whatsapp-btn i {
-          font-size: 20px;
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: var(--surface-blue);
+            color: var(--blue);
+            display: grid;
+            place-items: center;
+            flex: none;
+        }
+        .stat-icon .material-symbols-rounded { font-size: 22px; }
+
+        .stat-value {
+            font-family: "Outfit", "Roboto", sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .whatsapp-btn:hover {
-          background-color: #1ebe5d;
-          transform: translateY(-1px);
+        .stat-label {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .stat-text { min-width: 0; }
+
+        /* ---------- Setup section ---------- */
+        .section-title {
+            font-family: "Outfit", "Roboto", sans-serif;
+            font-size: 1.375rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 0 0 4px;
+        }
+
+        .section-sub {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            margin: 0 0 20px;
+        }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .setup-card {
+            background: var(--surface-card);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .setup-card h3 {
+            font-family: "Outfit", "Roboto", sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .setup-card h3 .material-symbols-rounded {
+            font-size: 20px;
+            color: var(--blue);
+        }
+
+        .setup-card p.help {
+            margin: -6px 0 0;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .field input {
+            font: inherit;
+            font-size: 0.9375rem;
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border-radius: 12px;
+            border: 1px solid var(--outline);
+            background: var(--surface-card);
+            color: var(--text-primary);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .field input::placeholder { color: #9AA0A6; }
+        .field input:hover { border-color: #BDC1C6; }
+        .field input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 1px var(--blue);
+        }
+
+        .setup-card .btn { margin-top: 4px; width: 100%; }
+
+        .feedback-line {
+            margin: 12px 0 0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            min-height: 1.25rem;
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            margin-top: 56px;
+            padding-top: 24px;
+            border-top: 1px solid var(--outline-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: var(--text-secondary);
+            font-size: 0.8125rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 820px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .setup-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                flex-direction: column-reverse;
+                padding: 28px 24px;
+                gap: 28px;
+                text-align: center;
+            }
+            .hero-value { justify-content: center; }
+            .hero-actions { justify-content: center; }
+            .topbar { flex-wrap: wrap; }
+        }
+
+        @media (max-width: 400px) {
+            .stats { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 
 <body>
-    <div class="gauge-container">
-        <!-- <h3 class="app-name">Metr by Burdva</h3> -->
-    
-       <div style="justify-content: center;
-            align-items: center;
-            margin: auto;
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-direction: column;
-            flex-direction: column;">
-            <button id="connectBleButton" style="width:48%; display: none !important;">Connect Tank</button>
-            <button id="disconnectBleButton" style="width:48%; display: none !important;">Disconnect</button>
-            <p><i class="bx bx-wifi"></i> Device connection state: <strong><span id="bleState" style="color:#d13a30;">Waiting...</span></strong></p>
-            <div class="gas-cylinder">
-                <div class="tank-top"></div>
-                <div class="tank-body">
-                  <div class="lpg-level very-low" id="lpgLevel"></div>
-                </div>
-                <div class="tank-base"></div>
-            </div>
-            <p><i class='bx bx-sushi' ></i> Tank ID: <span id="sensorId"></span></p>
+    <div class="shell">
 
-        </div>
+        <header class="topbar">
+            <a class="brand" href="/">
+                <span class="brand-mark" role="img" aria-label="CheckMyGas logo"></span>
+                <span class="brand-name">Check<b>My</b>Gas</span>
+            </a>
+            <span class="status-chip" id="statusChip">
+                <span class="status-dot"></span>
+                <span id="bleState">Not connected</span>
+            </span>
+        </header>
 
-        <div class="row">
-
-            <div class="col-6 col-md-6 col-sm-6">
-                <div class="">
-                    <div class="title">
-                        <p class="title-text w-100">
-                            <i class=" bx bx-tachometer"></i> <span id="percentageFull">0.0</span>
-                        </p>
-                    </div>
-                    <div class="data">
-                        <p>
-                            Percentage Full
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-6 col-sm-6">
-                <div class="">
-                    <div class="title">
-                        <p class="title-text w-100">
-                           <i class=" bx bxs-thermometer"></i> <span id="temperature">0</span>
-                        </p>
-                    </div>
-                    <div class="data">
-                        <p>
-                            Temperature
-                        </p>
-                    </div>
+        <!-- Hero: live tank reading -->
+        <section class="hero" aria-label="Tank level">
+            <div class="hero-reading">
+                <p class="hero-eyebrow">Tank level</p>
+                <h1 class="hero-value is-empty" id="heroValue"><span id="percentageFull">–</span><span class="unit">%</span></h1>
+                <p class="hero-sub">
+                    Tank ID <span class="tank-id" id="sensorId">—</span>
+                </p>
+                <div class="hero-actions">
+                    <button id="connectBleButton" class="btn btn-filled">
+                        <span class="material-symbols-rounded">bluetooth</span>
+                        Connect tank
+                    </button>
+                    <button id="disconnectBleButton" class="btn btn-tonal hidden">
+                        <span class="material-symbols-rounded">bluetooth_disabled</span>
+                        Disconnect
+                    </button>
+                    <a id="addTankWhatsappBtn"
+                       href="https://wa.me/2348074566227?text=ADD_TANK"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn btn-whatsapp hidden">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.87 9.87 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.85 9.85 0 0 0 12.04 2zm0 18.15a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.23 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+                        Add tank via WhatsApp
+                    </a>
                 </div>
             </div>
 
-            <div class="col-6 col-md-6 col-sm-6">
-                <div class="">
-                    <div class="title">
-                        <p class="title-text w-100">
-                            <i class=" bx bx-signal-5"></i> <span id="signalStrength">0</span>
-                        </p>
+            <div class="gauge">
+                <div class="gas-cylinder">
+                    <div class="tank-top"></div>
+                    <div class="tank-body">
+                        <div class="lpg-level very-low" id="lpgLevel"></div>
                     </div>
-                    <div class="data">
-                        <p>
-                            Signal Strength
-                        </p>
-                    </div>
+                    <div class="tank-base"></div>
+                </div>
+                <span class="gauge-caption">Live gas level</span>
+            </div>
+        </section>
+
+        <!-- Live stats -->
+        <section class="stats" aria-label="Sensor readings">
+            <div class="stat">
+                <span class="stat-icon"><span class="material-symbols-rounded">device_thermostat</span></span>
+                <div class="stat-text">
+                    <div class="stat-value" id="temperature">—</div>
+                    <div class="stat-label">Temperature</div>
                 </div>
             </div>
-
-            <div class="col-6 col-md-6 col-sm-6">
-                <div class="">
-                    <div class="title">
-                        <p class="title-text w-100">
-                            <i class=" bx bx-circle-quarter"></i> <span id="angle">0</span>
-                        </p>
-                    </div>
-                    <div class="data">
-                        <p>
-                            Angle
-                        </p>
-                    </div>
+            <div class="stat">
+                <span class="stat-icon"><span class="material-symbols-rounded">weight</span></span>
+                <div class="stat-text">
+                    <div class="stat-value" id="mass">—</div>
+                    <div class="stat-label">Gas mass</div>
                 </div>
             </div>
-
-
-            <div class="col-6 col-md-6 col-sm-6">
-                <div class="">
-                    <div class="title">
-                        <p class="title-text w-100">
-                            <i class=" bx bxs-cube"></i><span id="mass">0</span>
-                        </p>
-                    </div>
-                    <div class="data">
-                        <p>
-                            Mass
-                        </p>
-                    </div>
+            <div class="stat">
+                <span class="stat-icon"><span class="material-symbols-rounded">signal_cellular_alt</span></span>
+                <div class="stat-text">
+                    <div class="stat-value" id="signalStrength">—</div>
+                    <div class="stat-label">Signal strength</div>
                 </div>
             </div>
-
-            <div class="col-6 col-md-6 col-sm-6">
-                <div class="">
-                    <div class="title">
-                        <p class="title-text w-100">
-                            <i class="bx bx-link"></i><span id="ip"></span>
-                        </p>
-                    </div>
-                    <div class="data">
-                        <p>
-                            IP Address
-                        </p>
-                    </div>
+            <div class="stat">
+                <span class="stat-icon"><span class="material-symbols-rounded">architecture</span></span>
+                <div class="stat-text">
+                    <div class="stat-value" id="angle">—</div>
+                    <div class="stat-label">Tilt angle</div>
                 </div>
             </div>
-
-        </div>
-
-        <div id="popupWifiForm" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="closePopup('popupWifiForm')">&times;</span>
-                <h2 class="app-name">Connect to Wifi</h2>
-                <form id="myWifiForm" onsubmit="handleSubmit(event, 'popupWifiForm')">
-                    <div class="form-group">
-                        <label for="ssid">Name (SSID)</label>
-                        <input type="text" id="ssid" name="ssid" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="pass">Password</label>
-                        <input type="password" id="pass" name="pass" class="form-control" required aria-required="true">
-                    </div>
-                    <div class="form-group">
-                        <label for="spass">Security Password</label>
-                        <input type="password" id="spass" name="spass" class="form-control" required aria-required="true">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Connect</button>
-                </form>
+            <div class="stat">
+                <span class="stat-icon"><span class="material-symbols-rounded">lan</span></span>
+                <div class="stat-text">
+                    <div class="stat-value" id="ip">—</div>
+                    <div class="stat-label">IP address</div>
+                </div>
             </div>
-        </div>
-        <div id="popupSecurityCodeForm" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="closePopup('popupSecurityCodeForm')">&times;</span>
-                <h2 class="app-name">Update Security Code</h2>
-                <form id="mySecurityCodeForm" onsubmit="handleSubmit(event, 'popupSecurityCodeForm')">
-                    <div class="form-group">
-                        <label for="opass">Old Password</label>
-                        <input type="password" id="opass" name="opass" class="form-control" required aria-required="true">
-                    </div>
-                    <div class="form-group">
-                        <label for="npass">New Password</label>
-                        <input type="password" id="npass" name="npass" class="form-control" required aria-required="true">
-                    </div>
-                    <div class="form-group">
-                        <label for="cpass">Confirm Password</label>
-                        <input type="password" id="cpass" name="cpass" class="form-control" required aria-required="true">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Connect</button>
-                </form>
+            <div class="stat">
+                <span class="stat-icon"><span class="material-symbols-rounded">propane_tank</span></span>
+                <div class="stat-text">
+                    <div class="stat-value" id="deviceName">Burdva GM</div>
+                    <div class="stat-label">Device</div>
+                </div>
             </div>
-        </div>
-
-<!--        <p><span class="small" onclick="openPopup('popupWifiForm')">Connect to Device</span></p>-->
-<!--        <p><span class="small" onclick="openPopup('popupSecurityCodeForm')">Change Device Security Code</span></p>-->
-        <div class="row" style="margin-top:10px;">
-            <div class="col-12">
-                <!-- WhatsApp Add Tank Button -->
-                <a
-                  id="addTankWhatsappBtn"
-                  href="https://wa.me/2348074566227?text=ADD_TANK"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="whatsapp-btn"
-                  style="display: none !important;"
-                >
-                  <i class="bx bx-whatsapp"></i>
-                  Add Tank via WhatsApp
-                </a>
-            </div>
-        </div>
+        </section>
 
         <!-- ADSENSE GOOGLE ADS: checkmygas page -->
         <!-- <ins class="adsbygoogle"
@@ -831,48 +647,63 @@ input:focus, input:hover {
              (adsbygoogle = window.adsbygoogle || []).push({});
         </script> -->
 
-        
-        <!-- BLE Controls -->
-        <div class="row" style="margin-top:10px;">
-            <div class="col-12">
-                <h5>Add to WiFi Network</h5>
-                <input type="text" id="wifiSsid" placeholder="WiFi SSID" style="width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
-                <input type="password" id="wifiPass" placeholder="Password" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
-                <button id="sendWifiBtn" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;">Submit</button>
-            </div>
-        </div>
+        <!-- Device setup -->
+        <section aria-label="Device setup">
+            <h2 class="section-title">Device setup</h2>
+            <p class="section-sub">Connect your tank first, then send settings over Bluetooth.</p>
 
-        <div class="row" style="margin-top:10px;">
-            <div class="col-12">
-                <h5>Update Tank Height (mm)</h5>
-                <input type="number" id="tankHeight" placeholder="Tank Height" style="width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
-                <button id="sendTankHeightBtn" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;">Submit</button>
-            </div>
-        </div>
+            <div class="setup-grid">
+                <div class="setup-card">
+                    <h3><span class="material-symbols-rounded">wifi</span> Wi-Fi network</h3>
+                    <p class="help">Put your tank monitor on your home Wi-Fi.</p>
+                    <div class="field">
+                        <label for="wifiSsid">Network name (SSID)</label>
+                        <input type="text" id="wifiSsid" placeholder="e.g. Home-WiFi" autocomplete="off">
+                    </div>
+                    <div class="field">
+                        <label for="wifiPass">Password</label>
+                        <input type="password" id="wifiPass" placeholder="Wi-Fi password">
+                    </div>
+                    <button id="sendWifiBtn" class="btn btn-filled">Send to tank</button>
+                    <p class="feedback-line" id="wifiFeedback"></p>
+                </div>
 
-        <div class="row" style="margin-top:10px;">
-            <div class="col-12">
-                <h5>Update Tank Circumference (m)</h5>
-                <input type="number" id="tankCircumference" placeholder="Tank Circumference" style="width:60%; padding-left: 10px !important; padding-right: 10px !important;"/>
-                <button id="sendTankCircumferenceBtn" style="margin-top:8px; width:60%; padding-left: 10px !important; padding-right: 10px !important;">Submit</button>
-            </div>
-        </div>
+                <div class="setup-card">
+                    <h3><span class="material-symbols-rounded">height</span> Tank height</h3>
+                    <p class="help">Measured inside height of your cylinder.</p>
+                    <div class="field">
+                        <label for="tankHeight">Height (mm)</label>
+                        <input type="number" id="tankHeight" placeholder="e.g. 580" inputmode="numeric">
+                    </div>
+                    <button id="sendTankHeightBtn" class="btn btn-filled">Save height</button>
+                </div>
 
-        <div class="row" style="margin-top:10px;">
-            <div class="col-12">
-                <p id="feedback" style="margin-top:8px; width:60%;"></p>
+                <div class="setup-card">
+                    <h3><span class="material-symbols-rounded">radio_button_unchecked</span> Tank circumference</h3>
+                    <p class="help">Distance around the widest part of the cylinder.</p>
+                    <div class="field">
+                        <label for="tankCircumference">Circumference (m)</label>
+                        <input type="number" id="tankCircumference" placeholder="e.g. 0.96" step="0.01" inputmode="decimal">
+                    </div>
+                    <button id="sendTankCircumferenceBtn" class="btn btn-filled">Save circumference</button>
+                </div>
             </div>
-        </div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+
+            <p class="feedback-line" id="feedback" role="status"></p>
+        </section>
+
+        <footer>
+            <span>© CheckMyGas · Your go-to app for gas level validation</span>
+            <span>Works over Bluetooth in Chrome on desktop &amp; Android</span>
+        </footer>
 
     </div>
+
     <script>
         const connectBtn = document.getElementById('connectBleButton');
         const disconnectBtn = document.getElementById('disconnectBleButton');
         const bleState = document.getElementById('bleState');
+        const statusChip = document.getElementById('statusChip');
         const sendWifiBtn = document.getElementById('sendWifiBtn');
         const sendTankHeightBtn = document.getElementById('sendTankHeightBtn');
         const sendTankCircumferenceBtn = document.getElementById('sendTankCircumferenceBtn');
@@ -891,13 +722,16 @@ input:focus, input:hover {
         sendTankCircumferenceBtn.addEventListener('click', sendTankCircumferenceViaBLE);
         sendTankHeightBtn.addEventListener('click', sendTankHeightViaBLE);
 
-        connectBtn.style.display = 'block';
-        disconnectBtn.style.display = 'none';
-        addTankWhatsappBtn.style.display = 'none';
+        function setConnectionState(state, label) {
+            statusChip.classList.remove('is-connected', 'is-connecting');
+            if (state === 'connected') statusChip.classList.add('is-connected');
+            if (state === 'connecting') statusChip.classList.add('is-connecting');
+            bleState.textContent = label;
+        }
 
         function connectBLE() {
             if (!navigator.bluetooth) {
-                alert("Web Bluetooth not supported in this browser.");
+                alert("Web Bluetooth isn't supported in this browser. Use Chrome on desktop or Android.");
                 return;
             }
 
@@ -907,16 +741,15 @@ input:focus, input:hover {
             })
             .then(d => {
                 device = d;
-                bleState.textContent = 'Connecting...';
-                bleState.style.color = '#ff9800';
+                device.addEventListener('gattserverdisconnected', onDeviceDisconnected);
+                setConnectionState('connecting', 'Connecting…');
                 return device.gatt.connect();
             })
             .then(s => {
                 server = s;
-                bleState.textContent = 'Connected';
-                bleState.style.color = '#24af37';
-                disconnectBtn.style.display = 'block';
-                connectBtn.style.display = 'none';
+                setConnectionState('connected', 'Connected');
+                disconnectBtn.classList.remove('hidden');
+                connectBtn.classList.add('hidden');
                 return server.getPrimaryService(BLE_SERVICE);
             })
             .then(s => {
@@ -937,21 +770,24 @@ input:focus, input:hover {
             })
             .catch(err => {
                 console.error(err);
-                // disconnectBtn.style.display = 'block';
-                bleState.textContent = 'Error';
-                bleState.style.color = '#d13a30';
+                setConnectionState('error', 'Connection failed');
             });
+        }
+
+        function onDeviceDisconnected() {
+            setConnectionState('disconnected', 'Disconnected');
+            disconnectBtn.classList.add('hidden');
+            connectBtn.classList.remove('hidden');
         }
 
         function disconnectBLE() {
             if (device && device.gatt.connected) {
                 device.gatt.disconnect();
             }
-            disconnectBtn.style.display = 'none';
-            connectBtn.style.display = 'block';
-            addTankWhatsappBtn.style.display = 'none';
-            bleState.textContent = 'Disconnected';
-            bleState.style.color = '#d13a30';
+            disconnectBtn.classList.add('hidden');
+            connectBtn.classList.remove('hidden');
+            addTankWhatsappBtn.classList.add('hidden');
+            setConnectionState('disconnected', 'Disconnected');
         }
 
         function handleNotification(event) {
@@ -961,20 +797,18 @@ input:focus, input:hover {
             console.log(rawText);
 
             if (rawText.startsWith('WIFI_')) {
-                const feedback = document.getElementById('wifiFeedback');
+                const wifiFeedback = document.getElementById('wifiFeedback');
                 if (rawText === 'WIFI_CONNECTING') {
-                    feedback.textContent = 'Connecting to WiFi...';
-                    feedback.style.color = '#ff9800';
+                    wifiFeedback.textContent = 'Connecting to Wi-Fi…';
+                    wifiFeedback.style.color = 'var(--amber)';
                 } else if (rawText.startsWith('WIFI_CONNECTED:')) {
                     const ip = rawText.split(':')[1];
-                    feedback.textContent = `Connected! IP: ${ip}`;
-                    feedback.style.color = 'green';
-                    // Optional: auto-disconnect BLE after success?
-                    // setTimeout(disconnectBLE, 3000);
+                    wifiFeedback.textContent = `Connected! IP: ${ip}`;
+                    wifiFeedback.style.color = 'var(--green)';
                 } else if (rawText.includes('FAILED')) {
                     let msg = rawText.replace('WIFI_FAILED:', '');
-                    feedback.textContent = 'Connection failed: ' + (msg || 'unknown error');
-                    feedback.style.color = 'red';
+                    wifiFeedback.textContent = 'Connection failed: ' + (msg || 'unknown error');
+                    wifiFeedback.style.color = 'var(--red)';
                 }
                 return;
             }
@@ -992,19 +826,20 @@ input:focus, input:hover {
             try {
                 const data = JSON.parse(cleanJsonString);
 
-                // Now safely update the UI
                 document.getElementById('sensorId').textContent      = data.sid  || '—';
                 document.getElementById('temperature').textContent   = (data.temp || '0') + '°C';
                 document.getElementById('angle').textContent         = (data.angle || '0') + '°';
                 document.getElementById('signalStrength').textContent= (data.signal || '0') + ' mV';
-                document.getElementById('mass').textContent = (data.mass || '0') + " kg";
+                document.getElementById('mass').textContent          = (data.mass || '0') + ' kg';
 
                 const percentage = parseFloat(data.value) || 0;
 
-                document.getElementById('percentageFull').textContent = percentage + ' %';
+                document.getElementById('percentageFull').textContent = percentage;
+                document.getElementById('heroValue').classList.remove('is-empty');
                 document.getElementById('lpgLevel').style.height      = percentage + '%';
 
-                document.getElementById('ip').textContent = data.ip || '';
+                document.getElementById('ip').textContent = data.ip || '—';
+
                 const levelElement = document.querySelector('.lpg-level');
                 levelElement.classList.remove('very-low', 'low');
                 if (percentage <= 10) {
@@ -1012,7 +847,7 @@ input:focus, input:hover {
                 } else if (percentage <= 25) {
                     levelElement.classList.add('low');
                 }
-                updateWhatsappDevice(data.sid  || "");
+                updateWhatsappDevice(data.sid || "");
             } catch (e) {
                 console.error("JSON parse failed on:", cleanJsonString, e);
             }
@@ -1024,14 +859,14 @@ input:focus, input:hover {
             const pass = document.getElementById('wifiPass').value;
 
             if (!ssid) {
-                feedback.textContent = "Please enter SSID";
-                feedback.style.color = 'red';
+                feedback.textContent = "Enter your Wi-Fi network name first.";
+                feedback.style.color = 'var(--red)';
                 return;
             }
 
             if (!writeChar) {
-                feedback.textContent = "Device not connected";
-                feedback.style.color = 'red';
+                feedback.textContent = "Connect your tank first, then try again.";
+                feedback.style.color = 'var(--red)';
                 return;
             }
 
@@ -1039,30 +874,30 @@ input:focus, input:hover {
             const encoder = new TextEncoder();
             writeChar.writeValue(encoder.encode(command))
                 .then(() => {
-                    feedback.textContent = "WiFi credentials sent!";
-                    feedback.style.color = 'green';
+                    feedback.textContent = "Wi-Fi credentials sent to the tank.";
+                    feedback.style.color = 'var(--green)';
                     setTimeout(() => feedback.textContent = '', 8000);
                 })
                 .catch(err => {
-                    feedback.textContent = "Failed to send";
-                    feedback.style.color = 'red';
+                    feedback.textContent = "Couldn't send Wi-Fi details. Try again.";
+                    feedback.style.color = 'var(--red)';
                     console.error(err);
                 });
         }
 
-        // Send Tank height as plain text: SSID:value
+        // Send Tank height as plain text: UPDATE_TANK_HEIGHT:value
         function sendTankHeightViaBLE() {
             const tankHeight = document.getElementById('tankHeight').value.trim();
 
             if (!tankHeight) {
-                feedback.textContent = "Please enter tank height";
-                feedback.style.color = 'red';
+                feedback.textContent = "Enter the tank height first.";
+                feedback.style.color = 'var(--red)';
                 return;
             }
 
             if (!writeChar) {
-                feedback.textContent = "Device not connected";
-                feedback.style.color = 'red';
+                feedback.textContent = "Connect your tank first, then try again.";
+                feedback.style.color = 'var(--red)';
                 return;
             }
 
@@ -1070,30 +905,30 @@ input:focus, input:hover {
             const encoder = new TextEncoder();
             writeChar.writeValue(encoder.encode(command))
                 .then(() => {
-                    feedback.textContent = "Tank height sent!";
-                    feedback.style.color = 'green';
+                    feedback.textContent = "Tank height saved.";
+                    feedback.style.color = 'var(--green)';
                     setTimeout(() => feedback.textContent = '', 40000);
                 })
                 .catch(err => {
-                    feedback.textContent = "Failed to send";
-                    feedback.style.color = 'red';
+                    feedback.textContent = "Couldn't save tank height. Try again.";
+                    feedback.style.color = 'var(--red)';
                     console.error(err);
                 });
         }
 
-        // Send Tank circumference as plain text: SSID:value
+        // Send Tank circumference as plain text: UPDATE_TANK_CIRCUMFERENCE:value
         function sendTankCircumferenceViaBLE() {
             const tankCircumference = document.getElementById('tankCircumference').value.trim();
 
             if (!tankCircumference) {
-                feedback.textContent = "Please enter tank circumference";
-                feedback.style.color = 'red';
+                feedback.textContent = "Enter the tank circumference first.";
+                feedback.style.color = 'var(--red)';
                 return;
             }
 
             if (!writeChar) {
-                feedback.textContent = "Device not connected";
-                feedback.style.color = 'red';
+                feedback.textContent = "Connect your tank first, then try again.";
+                feedback.style.color = 'var(--red)';
                 return;
             }
 
@@ -1101,36 +936,25 @@ input:focus, input:hover {
             const encoder = new TextEncoder();
             writeChar.writeValue(encoder.encode(command))
                 .then(() => {
-                    feedback.textContent = "Tank circumference sent!";
-                    feedback.style.color = 'green';
+                    feedback.textContent = "Tank circumference saved.";
+                    feedback.style.color = 'var(--green)';
                     setTimeout(() => feedback.textContent = '', 40000);
                 })
                 .catch(err => {
-                    feedback.textContent = "Failed to send";
-                    feedback.style.color = 'red';
+                    feedback.textContent = "Couldn't save circumference. Try again.";
+                    feedback.style.color = 'var(--red)';
                     console.error(err);
                 });
         }
 
-        // Auto-reconnect on disconnect (optional)
-        if (navigator.bluetooth) {
-            navigator.bluetooth.addEventListener('disconnection', () => {
-                bleState.textContent = 'Disconnected';
-                bleState.style.color = '#d13a30';
-            });
-        }
-
-        window.addEventListener('beforeunload', function (event) {
-            // Your function logic here (e.g., logging some data)
-            console.log("Page is about to unload");
+        window.addEventListener('beforeunload', function () {
             disconnectBLE();
         });
 
         function updateWhatsappDevice(deviceId) {
             if (!addTankWhatsappBtn) return;
-            addTankWhatsappBtn.style.display = 'inline-flex';
+            addTankWhatsappBtn.classList.remove('hidden');
 
-            // Encode device ID for URL
             const encodedId = `%3A${encodeURIComponent(deviceId)}`;
             addTankWhatsappBtn.href = `https://wa.me/2348074566227?text=ADD_TANK${encodedId}`;
         }
