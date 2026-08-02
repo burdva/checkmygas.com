@@ -204,7 +204,7 @@ See the repository license for the terms governing use, modification, and distri
 ## Links
 
 **CheckMyGas:**
-https://burdva.github.io/checkmygas.com/
+https://checkmygas.com
 
 **Source Code:**
 https://github.com/burdva/checkmygas.com
